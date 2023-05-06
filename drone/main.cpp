@@ -8,12 +8,11 @@
 int main()
 {
 
-    PictureEncoder pict("../../DroneIMG37337.png", "bb");
+    PictureEncoder pict("../../DroneIMG37337.png", "ab");
     cout<<pict.b_data_tab.toStdString();
     pict.encode_picture();
-    cout<<pict.decode_picture().toStdString();
-
-
+    QString a(pict.decode_picture());
+    cout<<"\nle résultat c'est : "<<a.toStdString();
     return 0;
 
 }
