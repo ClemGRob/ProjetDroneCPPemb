@@ -1,4 +1,4 @@
-QT -= gui
+QT += core
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -16,6 +16,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp
+SOURCES += \
+        pictureencoder.cpp
+Header += \
+        pictureencoder.h
 
 TRANSLATIONS += \
     drone_en_US.ts

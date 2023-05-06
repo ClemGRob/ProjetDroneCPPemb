@@ -14,6 +14,6 @@ int main()
     cout<<pict.decode_picture().toStdString();
 
 
-          return 0;
+    return 0;
 
 }
