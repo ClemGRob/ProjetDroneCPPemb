@@ -1,8 +1,19 @@
-#include <QCoreApplication>
+#include <QImage>
+#include <QColor>
+#include <QFile>
+#include <QString>
+#include "pictureencoder.h"
+#include <iostream>
 
-int main(int argc, char *argv[])
+int main()
 {
-    QCoreApplication a(argc, argv);
 
-    return a.exec();
+    PictureEncoder pict("../../DroneIMG37337.png", "bb");
+    cout<<pict.b_data_tab.toStdString();
+    pict.encode_picture();
+    cout<<pict.decode_picture().toStdString();
+
+
+          return 0;
+
 }
