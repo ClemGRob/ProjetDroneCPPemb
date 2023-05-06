@@ -7,7 +7,7 @@
 PictureEncoder::PictureEncoder(QString s_image_name,QString s_data)
 {
     this->s_image_name = s_image_name;
-    this->s_data = s_data;//QString::number(s_data.length()) + QString("S")+ s_data;
+    this->s_data = s_data + QString("\t");
     this->b_data_tab = this->s_data.toStdString().c_str();//.toUtf8();
 
 
@@ -31,14 +31,10 @@ void PictureEncoder::encode_picture()
             unsigned char byte = data[j];
             for (int k = 7; k >= 0; k--) {
                 //chaque pixel
-                printf("pixel : %d  ",pixels[pixel_cmp]);
                 if(((byte >> k) & 1)==1)
-                    {pixels[pixel_cmp]|= 0x01;
-                    printf("to 1 ");}
+                    pixels[pixel_cmp]|= 0x01;
                 else
-                    {pixels[pixel_cmp]&= 0xFE;
-                    printf("to 0 ");}
-                printf("%d\n",pixels[pixel_cmp]);
+                    pixels[pixel_cmp]&= 0xFE;
                 pixel_cmp+=1;
                 
             }
@@ -53,7 +49,7 @@ QString PictureEncoder::decode_picture()
 unsigned char *pixels = this->i_image.bits();
     int imageSize = this->i_image.width() * this->i_image.height();
 
-    QBitArray messageBits(16);  
+    QBitArray messageBits(imageSize/8);  
     for (int i = 0; i < messageBits.size(); i++) {
         unsigned char pixel = pixels[i];
         bool bit = (pixel & 1) != 0;
@@ -68,6 +64,7 @@ unsigned char *pixels = this->i_image.bits();
             byte |= (messageBits.testBit(i*8+j) << 7-j);
             
         }
+        if(byte =='\t')break;
         messageData.append(byte);
     }
     QString message = QString(messageData.constData());
