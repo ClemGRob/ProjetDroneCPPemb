@@ -61,12 +61,13 @@ void MQTTImageReceiver::on_message(struct mosquitto* mosq, void* obj, const stru
     QByteArray imageData(static_cast<char*>(msg->payload), msg->payloadlen);
     QPixmap pixmap;
     pixmap.loadFromData(imageData);
+    printf("jajaja\n");
 
      // Découvrir les coordonnées GPS cachées dans l'image
-    float64_t lat, lon;
-    receiver->findHiddenCoordinates(imageData, lat, lon);
+    // float64_t lat, lon;
+    // receiver->findHiddenCoordinates(imageData, lat, lon);
 
-    emit receiver->imageReceived(pixmap, lat, lon);
+    // emit receiver->imageReceived(pixmap, lat, lon);
 }
 
 void MQTTImageReceiver::findHiddenCoordinates(const QByteArray& imageData, float64_t& lat, float64_t& lon) {

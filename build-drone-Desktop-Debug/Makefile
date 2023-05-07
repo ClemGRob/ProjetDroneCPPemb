@@ -40,7 +40,7 @@ DISTNAME      = drone1.0.0
 DISTDIR = /home/clement/Documents/M2rob/cppemb/ProjetDrone/ProjetDroneCPPemb/build-drone-Desktop-Debug/.tmp/drone1.0.0
 LINK          = g++
 LFLAGS        = 
-LIBS          = $(SUBLIBS) /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
+LIBS          = $(SUBLIBS) -lmosquitto /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -53,9 +53,11 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../drone/main.cpp \
-		../drone/pictureencoder.cpp 
+		../drone/pictureencoder.cpp \
+		../drone/mqttpub.cpp 
 OBJECTS       = main.o \
-		pictureencoder.o
+		pictureencoder.o \
+		mqttpub.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -132,7 +134,8 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../drone/drone.pro  ../drone/main.cpp \
-		../drone/pictureencoder.cpp
+		../drone/pictureencoder.cpp \
+		../drone/mqttpub.cpp
 QMAKE_TARGET  = drone
 DESTDIR       = 
 TARGET        = drone
@@ -312,7 +315,7 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../drone/main.cpp ../drone/pictureencoder.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../drone/main.cpp ../drone/pictureencoder.cpp ../drone/mqttpub.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents drone_en_US.ts $(DISTDIR)/
 
 
@@ -362,12 +365,17 @@ compiler_clean: compiler_moc_predefs_clean
 ####### Compile
 
 main.o: ../drone/main.cpp ../drone/pictureencoder.h \
-		../includes/PAQL.h
+		../includes/PAQL.h \
+		../drone/mqttpub.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../drone/main.cpp
 
 pictureencoder.o: ../drone/pictureencoder.cpp ../drone/pictureencoder.h \
 		../includes/PAQL.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o pictureencoder.o ../drone/pictureencoder.cpp
+
+mqttpub.o: ../drone/mqttpub.cpp ../drone/mqttpub.h \
+		../includes/PAQL.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mqttpub.o ../drone/mqttpub.cpp
 
 ####### Install
 
