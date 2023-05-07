@@ -19,7 +19,7 @@ void PictureEncoder::encode_data()
 
 void PictureEncoder::encode_picture()
 {
-    this->i_image = QImage("../test_DroneIMG37337.png");
+    this->i_image = QImage(this->s_image_name);
     unsigned char *pixels = this->i_image.bits();
     int pixel_cmp = 0;
     for (int i = 0; i < this->s_data.length(); i++) {
@@ -74,20 +74,20 @@ unsigned char *pixels = this->i_image.bits();
 
 void PictureEncoder::make_sendable()
 {
-    QByteArray byteArray;
+    // QByteArray byteArray;
 
-    // Créez un objet QBuffer pour écrire les données de l'image dans le QByteArray
-    QBuffer buffer(&byteArray);
-    buffer.open(QIODevice::WriteOnly);
-    image.save(&buffer, "PNG"); // ou tout autre format d'image que vous préférez
+    // // Créez un objet QBuffer pour écrire les données de l'image dans le QByteArray
+    // QBuffer buffer(&byteArray);
+    // buffer.open(QIODevice::WriteOnly);
+    // image.save(&buffer, "PNG"); // ou tout autre format d'image que vous préférez
 
-    // Encodez les octets en Base64
-    QString imageData = QString::fromLatin1(byteArray.toBase64().constData());
+    // // Encodez les octets en Base64
+    // QString imageData = QString::fromLatin1(byteArray.toBase64().constData());
 
-    // Envoyer l'image encodée en Base64 en utilisant le protocole MQTT
-    QMQTT::Client client("localhost", 1883);
-    client.connect();
-    client.publish("topic/image", imageData.toUtf8());
+    // // Envoyer l'image encodée en Base64 en utilisant le protocole MQTT
+    // QMQTT::Client client("localhost", 1883);
+    // client.connect();
+    // client.publish("topic/image", imageData.toUtf8());
 
 
 }
