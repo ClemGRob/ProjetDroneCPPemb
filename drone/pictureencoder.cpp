@@ -4,6 +4,8 @@
 #include <iostream>
 #include <QByteArray>
 #include <QtCore/QBitArray>
+#include<mosquitto.h>
+#include<QBuffer>
 PictureEncoder::PictureEncoder(QString s_image_name,QString s_data)
 {
     this->s_image_name = s_image_name;
@@ -74,20 +76,20 @@ unsigned char *pixels = this->i_image.bits();
 
 void PictureEncoder::make_sendable()
 {
-    // QByteArray byteArray;
+    QByteArray byteArray;
+    QBuffer buffer(&byteArray);
+    buffer.open(QIODevice::WriteOnly);
+    this->i_image.save(&buffer, "PNG"); 
+    struct mosquitto *mosq = mosquitto_new(NULL, true, NULL);
+    mosquitto_connect(mosq, "broker.emqx.io", 1883, 60);
+    printf("taille : %lld",byteArray.size());
+    //mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", byteArray.size(), byteArray.data(), 2, false);
+    mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", 3, "aaa", 2, false);
 
-    // // Créez un objet QBuffer pour écrire les données de l'image dans le QByteArray
-    // QBuffer buffer(&byteArray);
-    // buffer.open(QIODevice::WriteOnly);
-    // image.save(&buffer, "PNG"); // ou tout autre format d'image que vous préférez
+    mosquitto_disconnect(mosq);
+    mosquitto_destroy(mosq);
 
-    // // Encodez les octets en Base64
-    // QString imageData = QString::fromLatin1(byteArray.toBase64().constData());
 
-    // // Envoyer l'image encodée en Base64 en utilisant le protocole MQTT
-    // QMQTT::Client client("localhost", 1883);
-    // client.connect();
-    // client.publish("topic/image", imageData.toUtf8());
 
 
 }

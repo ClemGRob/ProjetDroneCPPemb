@@ -13,10 +13,11 @@ int main()
     printf("wtf?");
     cout<<pict.b_data_tab.toStdString();
     pict.encode_picture();
-    QString a(pict.decode_picture());
-    MQTTImageReceiver b("/ynov/bordeaux/ProjetDroneCCPPemb");
-    b.pub("hello");
-    printf("toutbon");
+    pict.make_sendable();
+    // QString a(pict.decode_picture());
+    // MQTTImageReceiver b("/ynov/bordeaux/ProjetDroneCCPPemb");
+    // b.pub("hello");
+    // printf("toutbon");
     return 0;
 
 }
