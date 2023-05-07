@@ -6,6 +6,10 @@
 #include <QtCore/QBitArray>
 #include<mosquitto.h>
 #include<QBuffer>
+#include <chrono>
+#include <thread>
+#include<QCoreApplication>
+#include<QTime>
 PictureEncoder::PictureEncoder(QString s_image_name,QString s_data)
 {
     this->s_image_name = s_image_name;
@@ -91,9 +95,49 @@ void PictureEncoder::make_sendable()
     struct mosquitto *mosq = mosquitto_new(NULL, true, NULL);
     mosquitto_connect(mosq, "broker.emqx.io", 1883, 60);
 
-    
-    //cout<<byteArray;
-    mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", strlen(base64.toStdString().c_str()), base64.toStdString().c_str(), 2, false);
+
+    int num_chunks = base64.length() / 100;
+    if (base64.length() % 100 != 0)
+    {
+        num_chunks++;
+    }
+    for (int i = 0; i < num_chunks; i++)
+    {
+        int chunk_start = i * 100;
+        int chunk_length = min((int)base64.length() - chunk_start, 100);
+        string chunk = base64.mid(chunk_start, chunk_length).toStdString();
+        printf("%s\n",chunk.c_str());
+
+        // Publier le message sur un topic MQTT
+        mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", chunk_length, chunk.c_str(), 0, false);
+        QTime dieTime= QTime::currentTime().addMSecs(1);
+        while (QTime::currentTime() < dieTime)
+            QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+
+    }
+// int num_chunks = base64.length() / 10;
+//     if (base64.length() % 10 != 0)
+//     {
+//         num_chunks++;
+//     }
+//     for (int i = 0; i < num_chunks; i++)
+//     {
+//         int chunk_start = i * 10;
+//         int chunk_length = std::min(base64.length() - chunk_start, 10);
+//         QString chunk = base64.mid(chunk_start, chunk_length);
+
+//         // Publier le message sur un topic MQTT
+//         mosquitto_publish(client, NULL, topic.toUtf8().constData(), chunk_length, chunk.toUtf8().constData(), 0, false);
+//     }
+
+
+    // mosquitto_publish(client, NULL, "mon_topic", base64.length(), base64.toStdString().c_str(), 0, false);
+    // mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", base64.length(), base64.toStdString().c_str(), 2, false);
+
+
+    // //cout<<byteArray;
+    // // mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", strlen(base64.toStdString().c_str()), base64.toStdString().c_str(), 2, false);
+    // mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", 3, "aaa", 2, false);
     // mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", 3, "aaa", 2, false);
 
     mosquitto_disconnect(mosq);

@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QPixmap>
 #include <QWidget>
+#include <QImage>
 
 MQTTImageReceiver::MQTTImageReceiver(const std::string& topic) : topic_(topic) {
     const char* ADDRESS = "broker.emqx.io";
@@ -57,11 +58,28 @@ void MQTTImageReceiver::on_connect(struct mosquitto* mosq, void* obj, int rc) {
 }
 
 void MQTTImageReceiver::on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg) {
-    MQTTImageReceiver* receiver = static_cast<MQTTImageReceiver*>(obj);
-    QByteArray imageData(static_cast<char*>(msg->payload), msg->payloadlen);
-    QPixmap pixmap;
-    pixmap.loadFromData(imageData);
+    // printf("aaaa");
+    // QByteArray messageArray((const char*)msg->payload, msg->payloadlen);
+
+    // // Convertir le QByteArray en QImage
+    // QByteArray imageData = QByteArray::fromBase64(messageArray);
+    // QImage image = QImage::fromData(imageData, "PNG");
+    // image.save("../ok.png");
+
+    //MQTTImageReceiver* receiver = static_cast<MQTTImageReceiver*>(obj);
+    //QByteArray messageArray((const char*)msg->payload, msg->payloadlen);
+    //printf("%s",msg->payload);
+
+    // Convertir le QByteArray en QImage
+    // QByteArray imageData = QByteArray::fromBase64(messageArray);
+    // QImage image = QImage::fromData(imageData, "PNG");
+    // image.save("../ok.png");
+    // QByteArray imageData(static_cast<char*>(msg->payload), msg->payloadlen);
+    // QPixmap pixmap;
+    // pixmap.loadFromData(imageData);
+    // pixmap.save("../image.jpg", "JPG");
     printf("jajaja\n");
+    printf("%s", msg->payload);
 
      // Découvrir les coordonnées GPS cachées dans l'image
     // float64_t lat, lon;
