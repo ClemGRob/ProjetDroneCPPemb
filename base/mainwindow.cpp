@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 
-MainWindow::MainWindow() {
+MainWindow::MainWindow() 
+{
+
     imageLabel = new QLabel(this);
     coordinatesLabel = new QLabel(this);
 

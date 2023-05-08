@@ -17,14 +17,19 @@ void PictureEncoder::encode_picture()
     this->i_image = QImage(this->s_image_name);
     unsigned char *c_pixels_ptr = this->i_image.bits();
     int s32_pixel_cmp = 0;
-    for (int s32_pixel_index = 0; s32_pixel_index < this->s_data.length(); s32_pixel_index++) {
+
+    for (int s32_pixel_index = 0; s32_pixel_index < this->s_data.length(); s32_pixel_index++) 
+    {
         //chaque caractere
         QByteArray utf8 = this->s_data.mid(s32_pixel_index, 1).toUtf8();
         const char* c_data_ptx = utf8.data();
-        for (int j = 0; j < utf8.length(); j++) {
+        for (int j = 0; j < utf8.length(); j++) 
+        {
             //chaque bit
             unsigned char c_byte = c_data_ptx[j];
-            for (int k = 7; k >= 0; k--) {
+            for (int k = 7; k >= 0; k--) 
+            {
+
                 //chaque pixel
                 if(((c_byte >> k) & 1)==1)
                     c_pixels_ptr[s32_pixel_cmp]|= 0x01;
@@ -35,7 +40,6 @@ void PictureEncoder::encode_picture()
             }
         }
     }
-
 
 }
 
