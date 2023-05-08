@@ -1,15 +1,16 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
+MainWindow::MainWindow() {
+    imageLabel = new QLabel(this);
+    coordinatesLabel = new QLabel(this);
+
+    QVBoxLayout* layout = new QVBoxLayout();
+    layout->addWidget(imageLabel);
+    layout->addWidget(coordinatesLabel);
+
+    QWidget* centralWidget = new QWidget(this);
+    centralWidget->setLayout(layout);
+    setCentralWidget(centralWidget);
+
+    mqttImageReceiver = new MQTTImageReceiver("/ynov/bordeaux/ProjetDroneCCPPemb");
 }
-
-MainWindow::~MainWindow()
-{
-    delete ui;
-}
-
