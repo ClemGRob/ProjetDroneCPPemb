@@ -78,7 +78,7 @@ void MQTTImageReceiver::base64ToImage()
         qWarning() << "Impossible de charger l'image à partir des données Base64.";
     }
 
-    qWarning() <<"Le message secret est : "<<s_decode_picture()<<endl<<"cet affichage disparetra après l'implémentation de l'IHM";
+    qWarning() <<"Le message secret est : "<<s_decode_picture()<<endl<<"cet affichage disparaitra après l'implémentation de l'IHM";
 
 }
 QString MQTTImageReceiver::s_decode_picture()

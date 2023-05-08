@@ -48,7 +48,7 @@ void PictureEncoder::send_data()
     buffer.open(QIODevice::WriteOnly);
     this->i_image.save(&buffer, "PNG");
     QString s_base64 = byteArray_tab.toBase64();
-    printf("Contenu base64 : %s", s_base64.toStdString().c_str());
+
 
     
     struct mosquitto *st_mosq_ptr = mosquitto_new(NULL, true, NULL);
@@ -67,8 +67,7 @@ void PictureEncoder::send_data()
         const int s32_chunk_start = i * s32_number_char_to_send;
         int chunk_length = min((int)s_base64.length() - s32_chunk_start, s32_number_char_to_send);
         string s_chunk = s_base64.mid(s32_chunk_start, chunk_length).toStdString();
-        printf("%s\n",s_chunk.c_str());
-        printf("%d\n",i);
+
         mosquitto_publish(st_mosq_ptr, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", chunk_length, s_chunk.c_str(), 2, false);
         QTime dieTime= QTime::currentTime().addMSecs(100);
         while (QTime::currentTime() < dieTime)
