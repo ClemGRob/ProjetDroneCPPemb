@@ -52,7 +52,7 @@ void PictureEncoder::encode_picture()
 
 }
 
-QString PictureEncoder::decode_picture()
+QString PictureEncoder::s_decode_picture()
 {
 unsigned char *pixels = this->i_image.bits();
     int imageSize = this->i_image.width() * this->i_image.height();

@@ -6,64 +6,64 @@
 #include <QPixmap>
 #include <QWidget>
 #include <QBitArray>
-//QImage imgtoc= new QImage();
-int cpt = 0;
-char img1[60000] = "";
 
-MQTTImageReceiver::MQTTImageReceiver(const std::string& topic) : topic_(topic) {
-    const char* ADDRESS = "broker.emqx.io";
+char c_image_b_64[60000] = "";
 
-    const int PORT = 1883;
-    const int KEEP_ALIVE = 200;
+MQTTImageReceiver::MQTTImageReceiver(const std::string& s_topic) : s_topic_(s_topic) {
+    const char* c_ADDRESS_ptr = "broker.emqx.io";
+
+    const int s32_PORT = 1883;
+    const int s32_KEEP_ALIVE = 200;
 
     mosquitto_lib_init();
-    mosq_ = mosquitto_new(NULL, true, this);
+    mosq_st = mosquitto_new(NULL, true, this);
 
-    if (!mosq_) {
+    if (!mosq_st) {
         qDebug() << "Error initializing Mosquitto";
         return;
     }
 
-    mosquitto_connect_callback_set(mosq_, on_connect);
-    mosquitto_message_callback_set(mosq_, on_message);
+    mosquitto_connect_callback_set(mosq_st, on_connect);
+    mosquitto_message_callback_set(mosq_st, on_message);
 
-    int ret = mosquitto_connect(mosq_, ADDRESS, PORT, KEEP_ALIVE);
-    if (ret != MOSQ_ERR_SUCCESS) {
+    int s32_ret = mosquitto_connect(mosq_st, c_ADDRESS_ptr, s32_PORT, s32_KEEP_ALIVE);
+    if (s32_ret != MOSQ_ERR_SUCCESS) {
         qDebug() << "Error connecting to Mosquitto";
         return;
     }
 
-    ret = mosquitto_subscribe(mosq_, NULL, topic.c_str(), 2);
-    if (ret != MOSQ_ERR_SUCCESS) {
-        qDebug() << "Error subscribing to Mosquitto topic";
+    s32_ret = mosquitto_subscribe(mosq_st, NULL, s_topic.c_str(), 2);
+    if (s32_ret != MOSQ_ERR_SUCCESS) {
+        qDebug() << "Error subscribing to Mosquitto s_topic";
         return;
     }
 
-    ret = mosquitto_loop_start(mosq_);
-    if (ret != MOSQ_ERR_SUCCESS) {
+    s32_ret = mosquitto_loop_start(mosq_st);
+    if (s32_ret != MOSQ_ERR_SUCCESS) {
         qDebug() << "Error starting Mosquitto loop";
         return;
     }
 }
 
 MQTTImageReceiver::~MQTTImageReceiver() {
-    if (mosq_) {
-        mosquitto_loop_stop(mosq_, true);
-        mosquitto_disconnect(mosq_);
-        mosquitto_destroy(mosq_);
+    if (mosq_st) {
+        mosquitto_loop_stop(mosq_st, true);
+        mosquitto_disconnect(mosq_st);
+        mosquitto_destroy(mosq_st);
     }
     mosquitto_lib_cleanup();
 }
 
-void MQTTImageReceiver::on_connect(struct mosquitto* mosq, void* obj, int rc) {
-    if (rc != 0) {
-        qDebug() << "Error connecting to Mosquitto: " << rc;
+void MQTTImageReceiver::on_connect(struct mosquitto* mosq_st, void* obj, int s32_rc) {
+    if (s32_rc != 0) {
+        qDebug() << "Error connecting to Mosquitto: " << s32_rc;
     }
 }
 
-void MQTTImageReceiver::on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg) {
-    if (std::string(static_cast<const char*>(msg->payload), msg->payloadlen) == "FIN")base64ToImage();
-    else {strcat(img1, static_cast<const char*>(msg->payload));
+void MQTTImageReceiver::on_message(struct mosquitto* mosq_st, void* obj, const struct mosquitto_message* msg_s) {
+    if (std::string(static_cast<const char*>(msg_s->payload), msg_s->payloadlen) == "FIN")base64ToImage();
+    else {
+        strcat(c_image_b_64, static_cast<const char*>(msg_s->payload));
     }
 }
 
@@ -71,44 +71,42 @@ void MQTTImageReceiver::on_message(struct mosquitto* mosq, void* obj, const stru
 
 void MQTTImageReceiver::base64ToImage()
 {
-    QByteArray imageData = QByteArray::fromBase64(img1);
-    QImage i_image = QImage::fromData(imageData);
+    QByteArray Q_imageData = QByteArray::fromBase64(c_image_b_64);
+    QImage i_image = QImage::fromData(Q_imageData);
     i_image.save("../save.png");
-    
-    // Vérifier si la conversion a réussi
     if (i_image.isNull()) {
         qWarning() << "Impossible de charger l'image à partir des données Base64.";
     }
 
-    qWarning() <<"Le message secret est : "<<decode_picture()<<endl<<"cet affichage disparetra après l'implémentation de l'IHM";
+    qWarning() <<"Le message secret est : "<<s_decode_picture()<<endl<<"cet affichage disparetra après l'implémentation de l'IHM";
 
 }
-QString MQTTImageReceiver::decode_picture()
+QString MQTTImageReceiver::s_decode_picture()
 {
     QImage i_image("../save.png");
-    unsigned char *pixels = i_image.bits();
-    int imageSize = i_image.width() * i_image.height();
+    unsigned char *c_pixels = i_image.bits();
+    int s32_imageSize = i_image.width() * i_image.height();
 
-    QBitArray messageBits(imageSize/8);  
-    for (int i = 0; i < messageBits.size(); i++) {
-        unsigned char pixel = pixels[i];
+    QBitArray messageBits_tab(s32_imageSize/8);  
+    for (int i = 0; i < messageBits_tab.size(); i++) {
+        unsigned char pixel = c_pixels[i];
         bool bit = (pixel & 1) != 0;
-        messageBits.setBit(i,bit);
+        messageBits_tab.setBit(i,bit);
     }
 
-    QByteArray messageData;
-    int numBits = messageBits.size();
+    QByteArray messageData_tab;
+    int numBits = messageBits_tab.size();
     for (int i = 0; i < numBits/8; i += 1) {
-        char byte = 0;
+        char c_byte = 0;
         for (int j = 0; j < 8; j++) {
-            byte |= (messageBits.testBit(i*8+j) << 7-j);
+            c_byte |= (messageBits_tab.testBit(i*8+j) << 7-j);
             
         }
-        if(byte =='\t')break;
-        messageData.append(byte);
+        if(c_byte =='\t')break;
+        messageData_tab.append(c_byte);
     }
-    QString message = QString(messageData.constData());
-    qWarning() << message;
-    return message;
+    QString s_message = QString(messageData_tab.constData());
+    qWarning() << s_message;
+    return s_message;
 }
  

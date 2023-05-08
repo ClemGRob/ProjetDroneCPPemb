@@ -10,7 +10,7 @@ public:
     void encode_picture();
     void send_data();
     void encode_data();
-    QString decode_picture();
+    QString s_decode_picture();
     QString s_data;
     QByteArray b_data_tab;
     void make_sendableaa();
