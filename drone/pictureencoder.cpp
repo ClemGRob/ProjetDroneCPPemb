@@ -69,6 +69,8 @@ void PictureEncoder::send_data()
         string s_chunk = s_base64.mid(s32_chunk_start, chunk_length).toStdString();
 
         mosquitto_publish(st_mosq_ptr, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", chunk_length, s_chunk.c_str(), 2, false);
+
+        //base can't reach all datas without a timer
         QTime dieTime= QTime::currentTime().addMSecs(100);
         while (QTime::currentTime() < dieTime)
             QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
