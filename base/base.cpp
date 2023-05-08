@@ -64,11 +64,7 @@ void MQTTImageReceiver::on_connect(struct mosquitto* mosq, void* obj, int rc) {
 void MQTTImageReceiver::on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg) {
     if (std::string(static_cast<const char*>(msg->payload), msg->payloadlen) == "FIN")base64ToImage();
     else {strcat(img1, static_cast<const char*>(msg->payload));
-    
-    cpt +=1;
-    
-    printf("%s\n",msg->payload);
-    printf("\n%d\n", cpt);}
+    }
 }
 
 
@@ -76,24 +72,22 @@ void MQTTImageReceiver::on_message(struct mosquitto* mosq, void* obj, const stru
 void MQTTImageReceiver::base64ToImage()
 {
     QByteArray imageData = QByteArray::fromBase64(img1);
-    QImage image = QImage::fromData(imageData);
-    image.save("../save.png");
+    QImage i_image = QImage::fromData(imageData);
+    i_image.save("../save.png");
     
     // Vérifier si la conversion a réussi
-    if (image.isNull()) {
+    if (i_image.isNull()) {
         qWarning() << "Impossible de charger l'image à partir des données Base64.";
-        //return QImage();
     }
 
-    qWarning() <<decode_picture();
-    printf("le message");
+    qWarning() <<"Le message secret est : "<<decode_picture()<<endl<<"cet affichage disparetra après l'implémentation de l'IHM";
 
 }
 QString MQTTImageReceiver::decode_picture()
 {
-    QImage image("../save.png");
-    unsigned char *pixels = image.bits();
-    int imageSize = image.width() * image.height();
+    QImage i_image("../save.png");
+    unsigned char *pixels = i_image.bits();
+    int imageSize = i_image.width() * i_image.height();
 
     QBitArray messageBits(imageSize/8);  
     for (int i = 0; i < messageBits.size(); i++) {
