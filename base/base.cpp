@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QPixmap>
 #include <QWidget>
+#include <QBitArray>
 //QImage imgtoc= new QImage();
 int cpt = 0;
 char img1[60000] = "";
@@ -68,33 +69,12 @@ void MQTTImageReceiver::on_message(struct mosquitto* mosq, void* obj, const stru
     
     printf("%s\n",msg->payload);
     printf("\n%d\n", cpt);}
-    // QByteArray messageArray((const char*)msg->payload, msg->payloadlen);
-    // printf("%s",msg->payload);
-
-    // Convertir le QByteArray en QImage
-    // QByteArray imageData = QByteArray::fromBase64(messageArray);
-    // QImage image = QImage::fromData(imageData, "PNG");
-    // image.save("../ok.png");
-    // QByteArray imageData(static_cast<char*>(msg->payload), msg->payloadlen);
-    // QPixmap pixmap;
-    // pixmap.loadFromData(imageData);
-    // pixmap.save("../image.jpg", "JPG");
-    
-    // float64_t lat, lon;
-    // receiver->findHiddenCoordinates(imageData, lat, lon);
-
-    // emit receiver->imageReceived(pixmap, lat, lon);
 }
 
 
 
 void MQTTImageReceiver::base64ToImage()
 {
-    // printf("\n%s\nok\n",img1);
-    // QByteArray imageData = QByteArray::fromBase64(base64Data);
-    
-    // Convertir le QByteArray en QImage
-    // QImage image = QImage::fromData(img1);
     QByteArray imageData = QByteArray::fromBase64(img1);
     QImage image = QImage::fromData(imageData);
     image.save("../save.png");
@@ -105,4 +85,36 @@ void MQTTImageReceiver::base64ToImage()
         //return QImage();
     }
 
+    qWarning() <<decode_picture();
+    printf("le message");
+
 }
+QString MQTTImageReceiver::decode_picture()
+{
+    QImage image("../save.png");
+    unsigned char *pixels = image.bits();
+    int imageSize = image.width() * image.height();
+
+    QBitArray messageBits(imageSize/8);  
+    for (int i = 0; i < messageBits.size(); i++) {
+        unsigned char pixel = pixels[i];
+        bool bit = (pixel & 1) != 0;
+        messageBits.setBit(i,bit);
+    }
+
+    QByteArray messageData;
+    int numBits = messageBits.size();
+    for (int i = 0; i < numBits/8; i += 1) {
+        char byte = 0;
+        for (int j = 0; j < 8; j++) {
+            byte |= (messageBits.testBit(i*8+j) << 7-j);
+            
+        }
+        if(byte =='\t')break;
+        messageData.append(byte);
+    }
+    QString message = QString(messageData.constData());
+    qWarning() << message;
+    return message;
+}
+ 

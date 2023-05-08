@@ -21,6 +21,7 @@ public:
     MQTTImageReceiver(const std::string& topic);
     ~MQTTImageReceiver();
     static void base64ToImage();
+    static QString decode_picture();
 
 signals:
     void imageReceived(const QPixmap& image, float64_t lat, float64_t lon);
