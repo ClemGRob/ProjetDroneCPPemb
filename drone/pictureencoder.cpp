@@ -52,34 +52,6 @@ void PictureEncoder::encode_picture()
 
 }
 
-QString PictureEncoder::s_decode_picture()
-{
-unsigned char *pixels = this->i_image.bits();
-    int imageSize = this->i_image.width() * this->i_image.height();
-
-    QBitArray messageBits(imageSize/8);  
-    for (int i = 0; i < messageBits.size(); i++) {
-        unsigned char pixel = pixels[i];
-        bool bit = (pixel & 1) != 0;
-        messageBits.setBit(i,bit);
-    }
-
-    QByteArray messageData;
-    int numBits = messageBits.size();
-    for (int i = 0; i < numBits/8; i += 1) {
-        char byte = 0;
-        for (int j = 0; j < 8; j++) {
-            byte |= (messageBits.testBit(i*8+j) << 7-j);
-            
-        }
-        if(byte =='\t')break;
-        messageData.append(byte);
-    }
-    QString message = QString(messageData.constData());
-    return message;
-}
-    
-
 void PictureEncoder::send_data()
 {
     // QImage image("mon_image.png");
