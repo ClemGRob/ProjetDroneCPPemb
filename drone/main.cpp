@@ -6,5 +6,4 @@ int main()
     pict.encode_picture();
     pict.send_data();
     return 0;
-
 }
