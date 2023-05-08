@@ -80,11 +80,11 @@ unsigned char *pixels = this->i_image.bits();
 }
     
 
-void PictureEncoder::make_sendable()
+void PictureEncoder::send_data()
 {
     // QImage image("mon_image.png");
 
-    // mosquitto_lib_init();
+    mosquitto_lib_init();
     // Convertir l'image en base64
     QByteArray byteArray;
     QBuffer buffer(&byteArray);
@@ -94,7 +94,9 @@ void PictureEncoder::make_sendable()
     //char* ttt= base64.toStdString().c_str();
     printf("Contenu base64 : %s", base64.toStdString().c_str());
 
-
+    // QImage image = QImage::fromData(base64.toStdString().c_str());
+    // QImage image = QImage::fromData(byteArray, "PNG");
+    
     struct mosquitto *mosq = mosquitto_new(NULL, true, NULL);
     mosquitto_connect(mosq, "broker.emqx.io", 1883, 60);
     mosquitto_loop_start(mosq);
@@ -117,10 +119,9 @@ void PictureEncoder::make_sendable()
         QTime dieTime= QTime::currentTime().addMSecs(100);
         while (QTime::currentTime() < dieTime)
             QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
-        
-        
 
     }
+    // mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", strlen(base64.toStdString().c_str()), base64.toStdString().c_str(), 2, false);
 
     mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", 3, "FIN", 2, false);
     mosquitto_loop_stop(mosq, true);

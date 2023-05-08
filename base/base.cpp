@@ -61,30 +61,13 @@ void MQTTImageReceiver::on_connect(struct mosquitto* mosq, void* obj, int rc) {
 }
 
 void MQTTImageReceiver::on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg) {
-    // m_imageData = std::vector<unsigned char>(static_cast<const unsigned char*>(msg->payload), static_cast<const unsigned char*>(msg->payload) + msg->payloadlen);
-    
-    // if (std::string(static_cast<const char*>(msg->payload), msg->payloadlen) == "FIN") {
-    //         // Appeler la fonction fin()
-    //         base64ToImage();
-    //         return;
-    //     }
     if (std::string(static_cast<const char*>(msg->payload), msg->payloadlen) == "FIN")base64ToImage();
-    // else{
-    //     QByteArray bytes = QByteArray::fromBase64(static_cast<const char*>(msg->payload));
-
-    // // Ajouter les données d'octets à l'image existante
-    // //globalImage.loadFromData(bytes);
-    // }
-    strcat(img1, static_cast<const char*>(msg->payload));
-    // if(cpt<3)strcat(img1, static_cast<const char*>(msg->payload));
-    // else if(cpt<6)strcat(img2, static_cast<const char*>(msg->payload));
-    // else if(cpt<9)strcat(img3, static_cast<const char*>(msg->payload));
-    // else if(cpt<12)strcat(img4, static_cast<const char*>(msg->payload));
+    else {strcat(img1, static_cast<const char*>(msg->payload));
     
     cpt +=1;
     
     printf("%s\n",msg->payload);
-    printf("\n%d\n", cpt);
+    printf("\n%d\n", cpt);}
     // QByteArray messageArray((const char*)msg->payload, msg->payloadlen);
     // printf("%s",msg->payload);
 
@@ -107,12 +90,19 @@ void MQTTImageReceiver::on_message(struct mosquitto* mosq, void* obj, const stru
 
 void MQTTImageReceiver::base64ToImage()
 {
-    printf("\n%s\nok\n",img1);
-    // QByteArray imageDataBytes(reinterpret_cast<const char*>(imageData.data()), imageData.size());
-    // QByteArray imageDataBytesDecoded = QByteArray::fromBase64(imageDataBytes);
+    // printf("\n%s\nok\n",img1);
+    // QByteArray imageData = QByteArray::fromBase64(base64Data);
+    
+    // Convertir le QByteArray en QImage
+    // QImage image = QImage::fromData(img1);
+    QByteArray imageData = QByteArray::fromBase64(img1);
+    QImage image = QImage::fromData(imageData);
+    image.save("../save.png");
+    
+    // Vérifier si la conversion a réussi
+    if (image.isNull()) {
+        qWarning() << "Impossible de charger l'image à partir des données Base64.";
+        //return QImage();
+    }
 
-    // QImage image;
-    // if (image.loadFromData(reinterpret_cast<const uchar*>(imageDataBytesDecoded.data()), imageDataBytesDecoded.size())) {
-    //     image.save("../save.png");
-    // }
 }

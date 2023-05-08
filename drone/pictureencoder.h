@@ -8,7 +8,7 @@ class PictureEncoder
 public:
     PictureEncoder(QString s_image_name,QString s_data);
     void encode_picture();
-    void make_sendable();
+    void send_data();
     void encode_data();
     QString decode_picture();
     QString s_data;

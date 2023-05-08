@@ -17,11 +17,9 @@ LIBS += -lmosquitto
 SOURCES += \
         main.cpp
 SOURCES += \
-        pictureencoder.cpp\
-        mqttpub.cpp
+        pictureencoder.cpp
 Header += \
-        pictureencoder.h\
-        mqttpub.h
+        pictureencoder.h
 
 TRANSLATIONS += \
     drone_en_US.ts
