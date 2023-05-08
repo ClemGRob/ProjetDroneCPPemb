@@ -10,11 +10,13 @@
 #include <thread>
 #include<QCoreApplication>
 #include<QTime>
+
 PictureEncoder::PictureEncoder(QString s_image_name,QString s_data)
 {
     this->s_image_name = s_image_name;
     this->s_data = s_data + QString("\t");
     this->b_data_tab = this->s_data.toStdString().c_str();//.toUtf8();
+    
 
 
 }
@@ -82,6 +84,7 @@ void PictureEncoder::make_sendable()
 {
     // QImage image("mon_image.png");
 
+    // mosquitto_lib_init();
     // Convertir l'image en base64
     QByteArray byteArray;
     QBuffer buffer(&byteArray);
@@ -95,53 +98,62 @@ void PictureEncoder::make_sendable()
     struct mosquitto *mosq = mosquitto_new(NULL, true, NULL);
     mosquitto_connect(mosq, "broker.emqx.io", 1883, 60);
 
+    int decoupe = 1000;
 
-    int num_chunks = base64.length() / 100;
-    if (base64.length() % 100 != 0)
+    int num_chunks = base64.length() / decoupe;
+    if (base64.length() % decoupe != 0)
     {
         num_chunks++;
     }
     for (int i = 0; i < num_chunks; i++)
     {
-        int chunk_start = i * 100;
-        int chunk_length = min((int)base64.length() - chunk_start, 100);
+        int chunk_start = i * decoupe;
+        int chunk_length = min((int)base64.length() - chunk_start, decoupe);
         string chunk = base64.mid(chunk_start, chunk_length).toStdString();
         printf("%s\n",chunk.c_str());
-
-        // Publier le message sur un topic MQTT
-        mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", chunk_length, chunk.c_str(), 0, false);
-        QTime dieTime= QTime::currentTime().addMSecs(1);
+        printf("%d\n",i);
+        mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", chunk_length, chunk.c_str(), 2, false);
+        QTime dieTime= QTime::currentTime().addMSecs(10);
         while (QTime::currentTime() < dieTime)
-            QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+            QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+        
+        
 
     }
-// int num_chunks = base64.length() / 10;
-//     if (base64.length() % 10 != 0)
-//     {
-//         num_chunks++;
-//     }
-//     for (int i = 0; i < num_chunks; i++)
-//     {
-//         int chunk_start = i * 10;
-//         int chunk_length = std::min(base64.length() - chunk_start, 10);
-//         QString chunk = base64.mid(chunk_start, chunk_length);
 
-//         // Publier le message sur un topic MQTT
-//         mosquitto_publish(client, NULL, topic.toUtf8().constData(), chunk_length, chunk.toUtf8().constData(), 0, false);
-//     }
-
-
-    // mosquitto_publish(client, NULL, "mon_topic", base64.length(), base64.toStdString().c_str(), 0, false);
-    // mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", base64.length(), base64.toStdString().c_str(), 2, false);
-
-
-    // //cout<<byteArray;
-    // // mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", strlen(base64.toStdString().c_str()), base64.toStdString().c_str(), 2, false);
-    // mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", 3, "aaa", 2, false);
-    // mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", 3, "aaa", 2, false);
+    mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", 3, "FIN", 2, false);
 
     mosquitto_disconnect(mosq);
     mosquitto_destroy(mosq);
+
+    // QTime dieTime= QTime::currentTime().addMSecs(1000);
+    //     while (QTime::currentTime() < dieTime)
+    //         QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+    // mosquitto_lib_init();
+
+    // struct mosquitto *mosq2 = mosquitto_new(NULL, true, NULL);
+    // mosquitto_connect(mosq2, "broker.emqx.io", 1883, 60);
+
+
+    // for (int i = num_chunks/2; i < num_chunks; i++)
+    // {
+    //     int chunk_start = i * decoupe;
+    //     int chunk_length = min((int)base64.length() - chunk_start, decoupe);
+    //     string chunk = base64.mid(chunk_start, chunk_length).toStdString();
+    //     printf("%s\n",chunk.c_str());
+    //     mosquitto_publish(mosq2, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", chunk_length, chunk.c_str(), 2, false);
+    //     if(i == num_chunks/2)
+    //     {QTime dieTime= QTime::currentTime().addMSecs(1000);
+    //     while (QTime::currentTime() < dieTime)
+    //         QCoreApplication::processEvents(QEventLoop::AllEvents, 10);}
+
+    // }
+
+    // mosquitto_publish(mosq2, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", 3, "FIN", 2, false);
+
+    // mosquitto_disconnect(mosq2);
+    // mosquitto_destroy(mosq2);
+    
 
 
 

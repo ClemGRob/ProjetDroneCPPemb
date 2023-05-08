@@ -4,8 +4,8 @@
 #include <QObject>
 #include <QPixmap>
 #include <QDebug>
-#include "opencv2/opencv.hpp"
 #include <mosquitto.h>
+#include <QImage>
 
 typedef char char_t;
 typedef float float32_t;
@@ -20,6 +20,7 @@ class MQTTImageReceiver : public QObject {
 public:
     MQTTImageReceiver(const std::string& topic);
     ~MQTTImageReceiver();
+    static void base64ToImage();
 
 signals:
     void imageReceived(const QPixmap& image, float64_t lat, float64_t lon);
@@ -27,11 +28,11 @@ signals:
 private:
     std::string topic_;
     struct mosquitto* mosq_;
+    static std::vector<unsigned char> m_imageData;
 
     static void on_connect(struct mosquitto* mosq, void* obj, int rc);
     static void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg);
-    void findHiddenCoordinates(const QByteArray& imageData, float64_t& lat, float64_t& lon);
-    std::string extractLSBData(const cv::Mat& img);
+
 };
 
 

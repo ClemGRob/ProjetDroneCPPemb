@@ -13,6 +13,7 @@ public:
     QString decode_picture();
     QString s_data;
     QByteArray b_data_tab;
+    void make_sendableaa();
 private:
     QString s_image_name;
     //QString s_data;
