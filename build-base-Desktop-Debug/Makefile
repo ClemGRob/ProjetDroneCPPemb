@@ -54,13 +54,13 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../base/base.cpp \
 		../base/main.cpp \
-		../base/mainwindow.cpp moc_base.cpp \
-		moc_mainwindow.cpp
+		../base/gui.cpp moc_base.cpp \
+		moc_gui.cpp
 OBJECTS       = base.o \
 		main.o \
-		mainwindow.o \
+		gui.o \
 		moc_base.o \
-		moc_mainwindow.o
+		moc_gui.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -117,6 +117,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		../base/.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -137,9 +138,9 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../base/base.pro ../base/base.h \
-		../base/mainwindow.h ../base/base.cpp \
+		../base/gui.h ../base/base.cpp \
 		../base/main.cpp \
-		../base/mainwindow.cpp
+		../base/gui.cpp
 QMAKE_TARGET  = base
 DESTDIR       = 
 TARGET        = base
@@ -148,7 +149,7 @@ TARGET        = base
 first: all
 ####### Build rules
 
-base: ui_mainwindow.h $(OBJECTS)  
+base: ui_gui.h $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: ../base/base.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -207,6 +208,7 @@ Makefile: ../base/base.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -284,6 +286,7 @@ Makefile: ../base/base.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -319,9 +322,9 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../base/base.h ../base/mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../base/base.cpp ../base/main.cpp ../base/mainwindow.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../base/mainwindow.ui $(DISTDIR)/
+	$(COPY_FILE) --parents ../base/base.h ../base/gui.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../base/base.cpp ../base/main.cpp ../base/gui.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../base/gui.ui $(DISTDIR)/
 	$(COPY_FILE) --parents base_en_US.ts $(DISTDIR)/
 
 
@@ -354,30 +357,30 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -std=gnu++11 -Wall -W -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_base.cpp moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_base.cpp moc_gui.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_base.cpp moc_mainwindow.cpp
+	-$(DEL_FILE) moc_base.cpp moc_gui.cpp
 moc_base.cpp: ../base/base.h \
+		../includes/PAQL.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/clement/Documents/M2rob/cppemb/ProjetDrone/ProjetDroneCPPemb/build-base-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/clement/Documents/M2rob/cppemb/ProjetDrone/ProjetDroneCPPemb/base -I/usr/include/opencv4 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../base/base.h -o moc_base.cpp
 
-moc_mainwindow.cpp: ../base/mainwindow.h \
-		../base/base.h \
+moc_gui.cpp: ../base/gui.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
-	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/clement/Documents/M2rob/cppemb/ProjetDrone/ProjetDroneCPPemb/build-base-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/clement/Documents/M2rob/cppemb/ProjetDrone/ProjetDroneCPPemb/base -I/usr/include/opencv4 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../base/mainwindow.h -o moc_mainwindow.cpp
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/clement/Documents/M2rob/cppemb/ProjetDrone/ProjetDroneCPPemb/build-base-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/clement/Documents/M2rob/cppemb/ProjetDrone/ProjetDroneCPPemb/base -I/usr/include/opencv4 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../base/gui.h -o moc_gui.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h
+compiler_uic_make_all: ui_gui.h
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h
-ui_mainwindow.h: ../base/mainwindow.ui \
+	-$(DEL_FILE) ui_gui.h
+ui_gui.h: ../base/gui.ui \
 		/usr/lib/qt5/bin/uic
-	/usr/lib/qt5/bin/uic ../base/mainwindow.ui -o ui_mainwindow.h
+	/usr/lib/qt5/bin/uic ../base/gui.ui -o ui_gui.h
 
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
@@ -390,22 +393,23 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 ####### Compile
 
 base.o: ../base/base.cpp ../base/base.h \
+		../includes/PAQL.h \
 		../base/mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o base.o ../base/base.cpp
 
 main.o: ../base/main.cpp ../base/base.h \
+		../includes/PAQL.h \
 		../base/mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../base/main.cpp
 
-mainwindow.o: ../base/mainwindow.cpp ../base/mainwindow.h \
-		../base/base.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../base/mainwindow.cpp
+gui.o: ../base/gui.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o gui.o ../base/gui.cpp
 
 moc_base.o: moc_base.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_base.o moc_base.cpp
 
-moc_mainwindow.o: moc_mainwindow.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+moc_gui.o: moc_gui.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_gui.o moc_gui.cpp
 
 ####### Install
 

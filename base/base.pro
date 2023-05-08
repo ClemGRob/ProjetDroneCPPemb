@@ -19,14 +19,15 @@ LIBS += -lmosquitto -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_img
 SOURCES += \
     base.cpp \
     main.cpp \
-    mainwindow.cpp
+    gui.cpp
 
 HEADERS += \
     base.h \
+    gui.h
     mainwindow.h
 
 FORMS += \
-    mainwindow.ui
+    gui.ui
 
 TRANSLATIONS += \
     base_en_US.ts
