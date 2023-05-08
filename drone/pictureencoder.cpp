@@ -17,6 +17,7 @@ void PictureEncoder::encode_picture()
     this->i_image = QImage(this->s_image_name);
     unsigned char *c_pixels_ptr = this->i_image.bits();
     int s32_pixel_cmp = 0;
+
     for (int s32_pixel_index = 0; s32_pixel_index < this->s_data.length(); s32_pixel_index++) 
     {
         //chaque caractere
@@ -28,6 +29,7 @@ void PictureEncoder::encode_picture()
             unsigned char c_byte = c_data_ptx[j];
             for (int k = 7; k >= 0; k--) 
             {
+
                 //chaque pixel
                 if(((c_byte >> k) & 1)==1)
                     c_pixels_ptr[s32_pixel_cmp]|= 0x01;
@@ -38,6 +40,7 @@ void PictureEncoder::encode_picture()
             }
         }
     }
+
 }
 
 void PictureEncoder::send_data()
@@ -75,6 +78,7 @@ void PictureEncoder::send_data()
         QTime dieTime= QTime::currentTime().addMSecs(100);
         while (QTime::currentTime() < dieTime)
             QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
+
     }
     
     mosquitto_publish(st_mosq_ptr, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", 3, "FIN", 2, false);

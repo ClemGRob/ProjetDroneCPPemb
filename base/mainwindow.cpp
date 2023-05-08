@@ -2,6 +2,7 @@
 
 MainWindow::MainWindow() 
 {
+
     imageLabel = new QLabel(this);
     coordinatesLabel = new QLabel(this);
 

@@ -20,6 +20,7 @@ public:
 private:
     std::string s_topic_;
     struct mosquitto* mosq_st;
+
     static void on_connect(struct mosquitto* mosq, void* obj, int rc);
     static void on_message(struct mosquitto* mosq, void* obj, const struct mosquitto_message* msg);
 
