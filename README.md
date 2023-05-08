@@ -13,11 +13,11 @@
 #### open folders "drone" and "base" and build it (release mode)
 ## prompt
 ### open a first prompt, we will call it "drone prompt" 
-#### cd drone
+#### cd ../build-drone-Desktop-Release
 #### make -j20
 
 ### open a second prompt, we will call it "base prompt" 
-#### cd base
+#### cd ../build-base-Desktop-Release
 #### make -j20
 
 
@@ -30,11 +30,8 @@
 ## prompt
 #### we start with base : 
 ### base prompt
-#### cd ../build-base-Desktop-Release
 #### ./base
-
 ### drone prompt
-#### cd ../build-drone-Desktop-Release
 #### ./drone
 
 
