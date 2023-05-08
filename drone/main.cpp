@@ -1,18 +1,10 @@
-#include <QImage>
-#include <QColor>
-#include <QFile>
-#include <QString>
 #include "pictureencoder.h"
-#include <iostream>
 
 int main()
 {
-
-    PictureEncoder pict("../../DroneIMG37337.png", "salut beaugosse");
-    cout<<pict.b_data_tab.toStdString();
+    PictureEncoder pict("../DroneIMG37337.png", "37°42'41.9\"S 144°59'33.0\"E");
     pict.encode_picture();
-    QString a(pict.decode_picture());
-    cout<<"\nle résultat c'est : "<<a.toStdString();
+    pict.send_data();
     return 0;
 
 }
