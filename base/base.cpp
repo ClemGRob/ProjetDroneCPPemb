@@ -7,7 +7,7 @@
 #include <QWidget>
 //QImage imgtoc= new QImage();
 int cpt = 0;
-char img1[50000] = "";
+char img1[60000] = "";
 
 MQTTImageReceiver::MQTTImageReceiver(const std::string& topic) : topic_(topic) {
     const char* ADDRESS = "broker.emqx.io";

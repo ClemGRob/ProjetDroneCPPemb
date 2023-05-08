@@ -97,6 +97,7 @@ void PictureEncoder::make_sendable()
 
     struct mosquitto *mosq = mosquitto_new(NULL, true, NULL);
     mosquitto_connect(mosq, "broker.emqx.io", 1883, 60);
+    mosquitto_loop_start(mosq);
 
     int decoupe = 1000;
 
@@ -113,7 +114,7 @@ void PictureEncoder::make_sendable()
         printf("%s\n",chunk.c_str());
         printf("%d\n",i);
         mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", chunk_length, chunk.c_str(), 2, false);
-        QTime dieTime= QTime::currentTime().addMSecs(10);
+        QTime dieTime= QTime::currentTime().addMSecs(100);
         while (QTime::currentTime() < dieTime)
             QCoreApplication::processEvents(QEventLoop::AllEvents, 10);
         
@@ -122,7 +123,7 @@ void PictureEncoder::make_sendable()
     }
 
     mosquitto_publish(mosq, NULL, "/ynov/bordeaux/ProjetDroneCCPPemb", 3, "FIN", 2, false);
-
+    mosquitto_loop_stop(mosq, true);
     mosquitto_disconnect(mosq);
     mosquitto_destroy(mosq);
 
